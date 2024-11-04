@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout GIT') {
             steps {
-                git branch: 'main',
+                git branch: 'ZarouiAhmed-5NIDS2-G6',
                 url: 'https://github.com/ahmedzaroui1/5NIDS2-G6-TPFOYER.git'            
             }
         }
