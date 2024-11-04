@@ -79,5 +79,24 @@ pipeline {
                 sh "docker push zarouiahmeed/ahmedzaroui-5nids2-g6-tpfoyer:latest"
             }
         }
+        stage('Clean Up Old Containers and Images') {
+            steps {
+                // Remove all stopped containers, unused images, and dangling images
+                sh '''
+                    docker compose down
+                    docker system prune -af
+                '''
+            }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                // Start the application and MySQL database using Docker Compose
+                sh 'docker compose up -d'
+            }
+        }
+
+
+
     }
 }
