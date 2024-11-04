@@ -1,7 +1,12 @@
 pipeline {
     agent any
      environment {
-                SONAR_TOKEN = credentials('sonarqube')
+        SONAR_TOKEN = credentials('sonarqube')
+        NEXUS_VERSION = 'nexus3'
+        NEXUS_PROTOCOL = 'http'
+        NEXUS_URL = '192.168.50.4:8081'             // Nexus URL
+        NEXUS_REPOSITORY = '5nids2-G6-tp_foyer'                // Nexus Repository for Maven Releases
+        NEXUS_CREDENTIAL_ID = 'nexus'                        // Nexus Credentials ID
         }
     stages {
         stage('Checkout GIT') {
@@ -27,12 +32,21 @@ pipeline {
                 }
             }
         }
+        stage('Maven Test'){
+            steps{
+                sh "mvn test"
+            }
+        }
         stage('Maven Package'){
             steps{
                 sh "mvn package -DskipTests"
             }
         }
-
+        stage('Indexing in Nexus'){
+            steps {
+                sh "mvn deploy -Dmaven.test.skip=true -DaltDeploymentRepository=deploymentRepo::default::http://192.168.50.4:8081/repository/5nids2-G6-tp_foyer/"
+            }
+        }
         stage('Login to Docker') {
             steps {
                 script {

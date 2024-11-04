@@ -55,6 +55,13 @@
 
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>deploymentRepo</id>
+        <url>http://192.168.50.4:8081/repository/5nids2-G6-tp_foyer/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
