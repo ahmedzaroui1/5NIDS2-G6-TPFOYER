@@ -1,5 +1,8 @@
 pipeline {
     agent any
+     environment {
+                SONAR_TOKEN = credentials('sonarqube')
+        }
     stages {
         stage('Checkout GIT') {
             steps {
@@ -12,11 +15,24 @@ pipeline {
                 sh "mvn clean"
             }
         }
+        stage('Maven Compile') {
+            steps{
+                sh "mvn compile"
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
+                    sh "mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Dsonar.projectKey=projet-jenkins -Dsonar.projectName='projet-jenkins'"
+                }
+            }
+        }
         stage('Maven Package'){
             steps{
                 sh "mvn package -DskipTests"
             }
         }
+
         stage('Login to Docker') {
             steps {
                 script {
